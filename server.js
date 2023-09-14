@@ -14,8 +14,8 @@ app.use(session({
 app.use(express.static('public'));
 
 // Spotify API credentials
-const client_id = 'your_client_id';
-const client_secret = 'your_client_secret';
+const client_id = '41a996f2c5d04c37b2f15e6c094984ba';
+const client_secret = '358ccfbacad847c4850916078a70ded5';
 const redirect_uri = 'http://localhost:3000/callback'; // Update with your actual redirect URI
 
 // Spotify API endpoints
@@ -55,7 +55,7 @@ app.get('/callback', async (req, res) => {
 });
 
 // Example route to fetch user's top artists
-app.get('/dashboard', async (req, res) => {
+app.get('/top-artists', async (req, res) => {
   const accessToken = req.session.accessToken;
 
   try {
@@ -65,10 +65,12 @@ app.get('/dashboard', async (req, res) => {
       },
     });
 
-    const topArtists = response.data.items;
+    // Extract the top artists' names from the response (assuming they are in the 'name' field)
+    const topArtists = response.data.items.slice(0, 10).map(artist => artist.name);
+
     res.json(topArtists);
   } catch (error) {
-    console.error('Error fetching user top artists:', error.message);
+    console.error('Error fetching top artists:', error.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
